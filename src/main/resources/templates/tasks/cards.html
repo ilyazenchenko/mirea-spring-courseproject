@@ -3,31 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <title>Карточки</title>
 </head>
 <body>
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a th:text="${order=='en-ru'}? 'Карточки EN-RU' : 'Карточки RU-EN'" class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+                <form method="get" th:action="@{/tasks}">
+                    <input class="btn btn-outline-primary" type="submit" value="Назад">
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+<div style="position: relative" class="w-75 mx-auto pt-5 text-center">
+    <h3>
+        <div th:if="${order.equals('en-ru')}" th:text="${word.getEngWord()}">Word 1</div>
+        <div th:unless="${order.equals('en-ru')}" th:text="${word.getRusWord()}">Word 1</div>
+    </h3>
 
-<div th:if="${order.equals('en-ru')}" th:text="${word.getEngWord()}">Word 1</div>
-<div th:unless="${order.equals('en-ru')}" th:text="${word.getRusWord()}">Word 1</div>
+    <div class="mt-5"><img th:src="${word.getPicUrl()}" width="128" height="128" alt="" title=""></div>
 
-<div><img th:src="${word.getPicUrl()}" width="128" height="128" alt="" title="" class="img-small"></div>
-
-<div style="display: none" id="myDiv" th:if="${order.equals('en-ru')}" th:text="${word.getRusWord()}">Word 2</div>
-<div style="display: none" id="myDivTwo" th:unless="${order.equals('en-ru')}" th:text="${word.getEngWord()}">Word 2</div>
-<div>
-    <button onclick="showDiv()">Показать перевод</button>
+    <h3>
+        <div class="mt-5" style="display: none" id="myDiv" th:if="${order.equals('en-ru')}"
+             th:text="${word.getRusWord()}">Word 2
+        </div>
+        <div class="mt-5" style="display: none" id="myDivTwo" th:unless="${order.equals('en-ru')}"
+             th:text="${word.getEngWord()}">Word 2
+        </div>
+    </h3>
+    <div class="mt-5">
+        <button onclick="showDiv()" class="btn btn-primary" id="showBt">Показать перевод</button>
+    </div>
+    <div class="mt-5">
+        <form th:if="${order.equals('en-ru')}" th:method="post" th:action="@{/tasks/cards/en-ru}">
+            <input type="submit" value="Следующее слово" class="btn btn-primary">
+        </form>
+        <form th:unless="${order.equals('en-ru')}" th:method="post" th:action="@{/tasks/cards/ru-en}">
+            <input type="submit" value="Следующее слово" class="btn btn-primary">
+        </form>
+    </div>
 </div>
-<div>
-    <form th:if="${order.equals('en-ru')}" th:method="post" th:action="@{/tasks/cards/en-ru}">
-        <input type="submit" value="Следующее слово">
-    </form>
-    <form th:unless="${order.equals('en-ru')}" th:method="post" th:action="@{/tasks/cards/ru-en}">
-        <input type="submit" value="Следующее слово">
-    </form>
-</div>
-
-<div><a href="/tasks">Закончить</a></div>
 
 <a style="position: absolute; bottom: 5px" th:text="${word.getAuthorText()}"
    href="https://www.flaticon.com/ru/free-icons/-">Author text</a>
@@ -35,14 +61,19 @@
     function showDiv() {
         var div = document.getElementById("myDiv");
         var divtwo = document.getElementById("myDivTwo");
-        if(div!= null){
+        var bt = document.getElementById("showBt");
+        if (div != null) {
             div.style.display = "block";
+            bt.style.display= "none";
         }
-        if (divtwo!=null){
+        if (divtwo != null) {
             divtwo.style.display = "block";
+            bt.style.display= "none";
         }
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
 </body>
 </html>

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/tasks")
@@ -32,13 +34,16 @@ public class TasksController {
     public TasksController(WordsService wordsService, PeopleService peopleService) {
         this.wordsService = wordsService;
         this.peopleService = peopleService;
+        chosenLevel = 0;
     }
 
     //Основная страница
 
     @GetMapping
     public String tasksPage(Model model, @AuthenticationPrincipal PersonDetails personDetails) {
-        return tasksPage(personDetails.getPerson().getLevel(), model, personDetails);
+        if (chosenLevel == 0)
+            chosenLevel = personDetails.getPerson().getLevel();
+        return tasksPage(chosenLevel, model, personDetails);
     }
 
     @GetMapping("/{level}")
@@ -52,6 +57,9 @@ public class TasksController {
         }
         model.addAttribute("userLevel", currentUser.getLevel());
         model.addAttribute("chosenLevel", level);
+        model.addAttribute("lessonsNumList", IntStream.rangeClosed(1, 10)
+                .boxed()
+                .collect(Collectors.toList()));
         return "tasks/tasks";
     }
 
@@ -74,7 +82,7 @@ public class TasksController {
     @PostMapping("/learn")
     public String getNewWord(Model model) {
         if (usedWordsList.size() == 10) {
-            return "redirect:/tasks";
+            return "redirect:/tasks/" + chosenLevel;
         }
         addNewWordInModel(model);
         return "tasks/learn";
@@ -99,7 +107,7 @@ public class TasksController {
     @PostMapping("/cards/en-ru")
     public String getNewCardsWordEnRu(Model model) {
         if (usedWordsList.size() == 10) {
-            return "redirect:/tasks";
+            return "redirect:/tasks/" + chosenLevel;
         }
         addNewWordInModel(model);
         model.addAttribute("order", "en-ru");
@@ -109,7 +117,7 @@ public class TasksController {
     @PostMapping("/cards/ru-en")
     public String getNewCardsWordRuEn(Model model) {
         if (usedWordsList.size() == 10) {
-            return "redirect:/tasks";
+            return "redirect:/tasks/" + chosenLevel;
         }
         addNewWordInModel(model);
         model.addAttribute("order", "ru-en");
@@ -128,7 +136,7 @@ public class TasksController {
     @PostMapping("/sentence")
     public String checkSentence(@ModelAttribute("sentence") String sentence, Model model) {
         if (usedWordsList.size() == 10)
-            return "redirect:/tasks";
+            return "redirect:/tasks/" + chosenLevel;
         if (sentence.trim().equals(currentLessonWordsList.get(currentWordIndex).getSentence())) {
             addNewWordInModel(model);
         } else {
@@ -152,7 +160,7 @@ public class TasksController {
                                   @AuthenticationPrincipal PersonDetails personDetails) {
         if (usedWordsList.size() == 10) {
             Person p = personDetails.getPerson();
-            if(chosenLevel == p.getLevel())
+            if (chosenLevel == p.getLevel())
                 peopleService.updateLevel(p);
             return "redirect:/tasks";
         }
@@ -162,9 +170,9 @@ public class TasksController {
             addOldWordInModel(model);
             model.addAttribute("testError", true);
             errorsCnt++;
-            if(errorsCnt == 3) {
+            if (errorsCnt == 3) {
                 errorsCnt = 0;
-                return "redirect:/tasks";
+                return "redirect:/tasks/" + chosenLevel;
             }
         }
         return "tasks/test";

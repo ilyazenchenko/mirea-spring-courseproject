@@ -12,18 +12,37 @@
     </style>
 </head>
 <body>
-<div><h3>Составьте правильное предложение из слов</h3></div>
-<form th:method="post" th:action="@{/tasks/sentence}">
-    <input style="width: 200px" id="inputSpan" type="text" name="sentence" readonly>
-    <input type="submit" value="Проверить">
-    <div style="color: red" th:if="${wrongSentence == true}">Попробуйте еще раз</div>
-</form>
-<div class="word-button" th:each="singleWord : ${shuffledWords}">
-    <button type="button" th:text="${singleWord}" onclick="addWord(this)"></button>
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Составьте правильное предложение из слов</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+                <form method="get" th:action="@{/tasks}">
+                    <input class="btn btn-outline-primary" type="submit" value="Назад">
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+<div style="position: relative" class="w-75 mx-auto pt-5 text-center">
+    <form th:method="post" th:action="@{/tasks/sentence}">
+        <span class="input-group mb-3">
+            <input id="inputSpan" type="text" class="form-control" name="sentence" readonly>
+        </span>
+        <input type="submit" value="Проверить" class="btn btn-primary">
+        <div style="color: red" th:if="${wrongSentence == true}">Попробуйте еще раз</div>
+    </form>
+    <div class="word-button mt-5" th:each="singleWord : ${shuffledWords}">
+        <button class="btn btn-outline-primary" type="button" th:text="${singleWord}" onclick="addWord(this)"></button>
+    </div>
+    <button class="btn btn-primary" id="clear" type="button" onclick="clearInput()">Очистить</button>
 </div>
-<button id="clear" type="button" onclick="clearInput()">Очистить</button>
-<div><a href="/tasks">Назад</a></div>
-
 <script>
     let inputSpan = document.getElementById('inputSpan');
 
