@@ -1,6 +1,7 @@
 package ru.zenchenko.courseproject.services;
 
 import jakarta.transaction.Transactional;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import ru.zenchenko.courseproject.model.Person;
 import ru.zenchenko.courseproject.repositories.PeopleRepository;
@@ -29,12 +30,14 @@ public class PeopleService {
         return peopleRepository.findAll();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     public void delete(int id){
         Optional<Person> p =  peopleRepository.findById(id);
         p.ifPresent(peopleRepository::delete);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     public void setLevel(int id, int level){
         Optional<Person> opt = peopleRepository.findById(id);

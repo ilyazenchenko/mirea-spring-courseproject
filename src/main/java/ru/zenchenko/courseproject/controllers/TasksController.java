@@ -34,15 +34,13 @@ public class TasksController {
     public TasksController(WordsService wordsService, PeopleService peopleService) {
         this.wordsService = wordsService;
         this.peopleService = peopleService;
-        chosenLevel = 0;
     }
 
     //Основная страница
 
     @GetMapping
     public String tasksPage(Model model, @AuthenticationPrincipal PersonDetails personDetails) {
-        if (chosenLevel == 0)
-            chosenLevel = personDetails.getPerson().getLevel();
+        chosenLevel = personDetails.getPerson().getLevel();
         return tasksPage(chosenLevel, model, personDetails);
     }
 
@@ -135,13 +133,13 @@ public class TasksController {
 
     @PostMapping("/sentence")
     public String checkSentence(@ModelAttribute("sentence") String sentence, Model model) {
-        if (usedWordsList.size() == 10)
-            return "redirect:/tasks/" + chosenLevel;
-        if (sentence.trim().equals(currentLessonWordsList.get(currentWordIndex).getSentence())) {
-            addNewWordInModel(model);
-        } else {
+        if (!sentence.trim().equals(currentLessonWordsList.get(currentWordIndex).getSentence())) {
             addOldWordInModel(model);
             model.addAttribute("wrongSentence", true);
+        } else {
+            if (usedWordsList.size() == 10)
+                return "redirect:/tasks/" + chosenLevel;
+            addNewWordInModel(model);
         }
         addShuffledListInModel(model);
         return "tasks/sentence";
@@ -158,22 +156,24 @@ public class TasksController {
     @PostMapping("/test")
     public String checkTestAnswer(@ModelAttribute("answer") String answer, Model model,
                                   @AuthenticationPrincipal PersonDetails personDetails) {
-        if (usedWordsList.size() == 10) {
-            Person p = personDetails.getPerson();
-            if (chosenLevel == p.getLevel())
-                peopleService.updateLevel(p);
-            return "redirect:/tasks";
-        }
-        if (answer.equals(currentLessonWordsList.get(currentWordIndex).getEngWord())) {
-            addNewWordInModel(model);
-        } else {
-            addOldWordInModel(model);
-            model.addAttribute("testError", true);
+        if (!answer.equals(currentLessonWordsList.get(currentWordIndex).getEngWord())) {
             errorsCnt++;
             if (errorsCnt == 3) {
                 errorsCnt = 0;
                 return "redirect:/tasks/" + chosenLevel;
             }
+            addOldWordInModel(model);
+            model.addAttribute("testError", true);
+        } else {
+            if (usedWordsList.size() == 10) {
+                Person p = personDetails.getPerson();
+                if (chosenLevel == p.getLevel()) {
+                    peopleService.updateLevel(p);
+                    chosenLevel++;
+                }
+                return "redirect:/tasks/"+chosenLevel;
+            }
+            addNewWordInModel(model);
         }
         return "tasks/test";
     }

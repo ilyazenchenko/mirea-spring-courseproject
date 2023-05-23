@@ -18,12 +18,12 @@
 
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Логин</label>
-        <input type="text" class="form-control" id="exampleInputEmail1" th:field="*{login}">
+        <input type="text" class="form-control" id="exampleInputEmail1" th:field="*{login}" required>
     </div>
     <div style="color: red" th:if="${#fields.hasErrors()}" th:errors="*{login}"></div>
     <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Пароль</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" th:field="*{password}">
+        <input type="password" class="form-control" id="exampleInputPassword1" th:field="*{password}" required>
     </div>
     <div style="color: red" th:if="${#fields.hasErrors()}" th:errors="*{password}"></div>
     <button type="submit" class="btn btn-primary">Зарегестрироваться</button>

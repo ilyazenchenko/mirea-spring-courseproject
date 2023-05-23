@@ -5,27 +5,20 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "words")
 public class Word {
-
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @Column
     private int level;
-
     @Column
     private String rusWord;
-
     @Column
     private String engWord;
-
     @Column
     private String picUrl;
-
     @Column
     private String authorText;
-
     @Column
     private String sentence;
 

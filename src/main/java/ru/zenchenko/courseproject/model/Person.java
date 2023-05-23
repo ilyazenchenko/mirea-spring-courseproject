@@ -9,16 +9,12 @@ public class Person {
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @Column
     String login;
-
     @Column
     String password;
-
     @Column
     int level;
-
     @Column
     String role;
 
