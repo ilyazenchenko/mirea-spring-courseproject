@@ -12,6 +12,7 @@ repositories {
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
+    mavenCentral()
 }
 
 dependencies {
@@ -22,8 +23,16 @@ dependencies {
     api 'org.springframework.boot:spring-boot-starter-security:3.0.7'
     runtimeOnly 'org.postgresql:postgresql:42.5.4'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.7'
-    testImplementation 'org.springframework.security:spring-security-test:6.0.2'
+//    implementation 'org.springframework.session:spring-session-core'
+// https://mvnrepository.com/artifact/org.springframework.session/spring-session-jdbc
+//    implementation 'org.springframework.session:spring-session-jdbc:3.1.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testImplementation 'org.mockito:mockito-core:5.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+
+//    testImplementation 'org.springframework.security:spring-security-test:6.0.2'
 }
 
 group = 'ru.zenchenko'
@@ -47,3 +56,6 @@ tasks.withType(Javadoc) {
     options.encoding = 'UTF-8'
 }
 targetCompatibility = JavaVersion.VERSION_11
+test {
+    useJUnitPlatform()
+}
