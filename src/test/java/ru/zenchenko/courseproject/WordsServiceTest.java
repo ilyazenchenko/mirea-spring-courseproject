@@ -32,17 +32,9 @@ public class WordsServiceTest {
     public void testFindAllByLevel_ReturnsListOfWords() {
         int level = 1;
         List<Word> expectedWords = Arrays.asList(
-                new Word(1,"стол","table"),
-                new Word(level,"небо","sky"),
-                new Word(level,"лампа","lamp"),
                 new Word(level,"стол","table"),
                 new Word(level,"небо","sky"),
-                new Word(level,"лампа","lamp"),
-                new Word(level,"стол","table"),
-                new Word(level,"небо","sky"),
-                new Word(level,"лампа","lamp"),
                 new Word(level,"лампа","lamp")
-
         );
 
         when(wordsRepository.findAllByLevel(level)).thenReturn(expectedWords);

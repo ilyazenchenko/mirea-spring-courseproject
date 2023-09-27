@@ -23,9 +23,11 @@ public class PeopleService {
     }
 
     @Transactional
-    public void updateLevel(Person person){
-        person.setLevel(person.getLevel()+1);
+    public void updateLevel(int id){
+        Optional<Person> optionalPerson = peopleRepository.findById(id);
+        optionalPerson.ifPresent(p -> p.setLevel(p.getLevel()+1));
     }
+
     public List<Person> findAll(){
         return peopleRepository.findAll();
     }
@@ -33,17 +35,13 @@ public class PeopleService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     public void delete(int id){
-        Optional<Person> p =  peopleRepository.findById(id);
+        Optional<Person> p = peopleRepository.findById(id);
         p.ifPresent(peopleRepository::delete);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     public void setLevel(int id, int level){
-        Optional<Person> opt = peopleRepository.findById(id);
-        if(opt.isPresent()) {
-            Person p = opt.get();
-            p.setLevel(level);
-        }
+        peopleRepository.findById(id).ifPresent(person -> person.setLevel(level));
     }
 }

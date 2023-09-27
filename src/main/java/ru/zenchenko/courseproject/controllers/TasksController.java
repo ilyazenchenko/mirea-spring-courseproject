@@ -31,6 +31,8 @@ public class TasksController {
     private int errorsCnt;
     private int chosenLevel;
 
+    boolean updateLevel = false;
+
     public TasksController(WordsService wordsService, PeopleService peopleService) {
         this.wordsService = wordsService;
         this.peopleService = peopleService;
@@ -47,9 +49,14 @@ public class TasksController {
     @GetMapping("/{level}")
     public String tasksPage(@PathVariable int level, Model model,
                             @AuthenticationPrincipal PersonDetails personDetails) {
+
         chosenLevel = level;
         Person currentUser = initPersonAndLists(personDetails, level);
-        if (level > currentUser.getLevel()) {
+        if(updateLevel) {
+            currentUser.setLevel(currentUser.getLevel()+1);
+            updateLevel = false;
+        }
+        if (level > currentUser.getLevel() || level < 1) {
             model.addAttribute("highLevel", true);
             return "redirect:/tasks/" + currentUser.getLevel();
         }
@@ -168,8 +175,9 @@ public class TasksController {
             if (usedWordsList.size() == 10) {
                 Person p = personDetails.getPerson();
                 if (chosenLevel == p.getLevel()) {
-                    peopleService.updateLevel(p);
+                    peopleService.updateLevel(p.getId());
                     chosenLevel++;
+                    updateLevel = true;
                 }
                 return "redirect:/tasks/"+chosenLevel;
             }
